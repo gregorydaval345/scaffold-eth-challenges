@@ -23,6 +23,11 @@ contract Staker {
     uint256 public claimDeadline = block.timestamp + 240 seconds;
     uint256 public currentBlock = 0;
 
+    // Events
+    event Stake(address indexed sender, uint256 amount);
+    event Received(address, uint);
+    event Execute(address indexed sender, uint256 amount);
+
     // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
     // ( Make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
 
