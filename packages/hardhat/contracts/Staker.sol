@@ -28,6 +28,27 @@ contract Staker {
     event Received(address, uint);
     event Execute(address indexed sender, uint256 amount);
 
+    // Start and end of the withdrawal window
+    function withdrawalTimeLeft()
+        public
+        view
+        returns (uint256 withdrawalTimeLeft)
+    {
+        if (block.timestamp >= withdrawalDeadline) {
+            return (0);
+        } else {
+            return (withdrawalDeadline - block.timestamp);
+        }
+    }
+
+    function claimPeriodLeft() public view returns (uint256 claimPeriodLeft) {
+        if (block.timestamp >= claimDeadline) {
+            return (0);
+        } else {
+            return (claimDeadline - block.timestamp);
+        }
+    }
+
     // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
     // ( Make sure to add a `Stake(address,uint256)` event and emit it for the frontend <List/> display )
 
