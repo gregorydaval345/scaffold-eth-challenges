@@ -252,6 +252,13 @@ function App(props) {
   );
   if (DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance);
 
+  // ** keep track of a variable from the contract in the local React state:
+  const claimedPeriodLeft = useContractReader(readContracts, "Staker", "claimPeriodLeft");
+  console.log("Claim Period Left:", claimedPeriodLeft);
+
+  const withdrawalTimeLeft = useContractReader(readContracts, "Staker", "withdrawalTimeLeft");
+  console.log("Withdrawal Time Left:", withdrawalTimeLeft);
+
   // ** keep track of total 'threshold' needed of ETH
   const threshold = useContractReader(readContracts, "Staker", "threshold");
   console.log("💵 threshold:", threshold);
@@ -569,6 +576,21 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+
+            <div style={{ padding: 8, marginTop: 16 }}>
+              <div>Reward rate per second</div>
+              <Balance balance={rewardRatePerSecond} fontSize={64} /> ETH
+            </div>
+
+            <div style={{ padding: 8, marginTop: 16, fontWeight: "bold" }}>
+              <div>Claim Period Left:</div>
+              {claimedPeriodLeft && humanizeDuration(claimPeriodLeft.toNumber() * 1000)}
+            </div>
+
+            <div style={{ padding: 8, marginTop: 16, fontWeight: "bold" }}>
+              <div>Withdrawal Period Left:</div>
+              {withdrawalTimeLeft && humanizeDuration(withdrawalTimeLeft.toNumber() * 1000)}
+            </div>
 
             <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
               <div>Stake Events:</div>
