@@ -29,6 +29,9 @@ contract Staker {
     event Execute(address indexed sender, uint256 amount);
 
     // Start and end of the withdrawal window
+    // If the current time is greater than the pre-arranged deadlines,
+    // we know that the deadline has passed and we return 0 to signify that a "state change" has occurred
+    // otherwise, we return the remaining time before the deadline is reached
     function withdrawalTimeLeft()
         public
         view
@@ -47,6 +50,33 @@ contract Staker {
         } else {
             return (claimDeadline - block.timestamp);
         }
+    }
+
+    // Modifiers
+    modifier withdrawalDeadlineReached(bool requireReached) {
+        uint256 timeRemaining = withdrawalTimeLeft();
+        if (requireReached) {
+            require(timeRemaining == 0, "Withdrawal period is not reached yet");
+        } else {
+            require(timeRemaining > 0, "Withdraw period has been reached");
+        }
+        _;
+    }
+
+    modifier claimDeadlineReached(bool requireReached) {
+        uint256 timeRemaining = claimPeriodLeft();
+        if (requireReached) {
+            require(timeRemaining == 0, "Claim deadline is not reached yet");
+        } else {
+            require(timeRemaining > 0, "Claim deadline has been reached");
+        }
+        _;
+    }
+
+    modifier notCompleted() {
+        bool completed = exampleExternalContract.completed();
+        require(!completed, "Stake already completed!");
+        _;
     }
 
     // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
